@@ -107,8 +107,12 @@ def get_episode_list(show_id):  # pylint: disable=missing-docstring
     else:
         show_info = tsdb.load_show_info(show_id)
     if show_info is not None:
+        seasons = show_info.get('seasons')
+        if not seasons:
+            seasons = show_info['seasons'] = data_utils._add_season_info(
+                show_info, None)
         event_list = []
-        for season in show_info.get('seasons'):
+        for season in seasons:
             params = {}
             params['id'] = show_info.get('idLeague', 0)
             params['s'] = season['season_name']
@@ -116,8 +120,9 @@ def get_episode_list(show_id):  # pylint: disable=missing-docstring
                 settings.EVENTLIST_URL, params=params, verboselog=settings.VERBOSELOG)
             if resp is not None:
                 ep_num = 1
-                for event in resp.get('events'):
+                for event in resp.get('events', []):
                     event['strEpisode'] = str(ep_num)
+                    event['strLeague'] = show_info.get('strLeague', '')
                     event_list.append(event)
                     encoded_ids = urllib.parse.urlencode(
                         {'show_id': params['id'], 'episode_id': event.get('idEvent', 0)})

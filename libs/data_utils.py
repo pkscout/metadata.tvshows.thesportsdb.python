@@ -124,7 +124,7 @@ def _add_season_info(show_info, vtag):
     resp = api_utils.load_info(
         settings.SEASON_URL, params=params, verboselog=settings.VERBOSELOG)
     if resp is None:
-        return
+        return []
     seasons = []
     for season in resp.get('seasons'):
         season_name = season.get('strSeason')
@@ -132,7 +132,8 @@ def _add_season_info(show_info, vtag):
             season_num = int(season_name[:4])
             logger.debug(
                 'adding information for season %s to list item' % season_name)
-            vtag.addSeason(season_num, season_name)
+            if vtag:
+                vtag.addSeason(season_num, season_name)
             seasons.append({'season_num': season_num,
                            'season_name': season_name})
     return seasons
