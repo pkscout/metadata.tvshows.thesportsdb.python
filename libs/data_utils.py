@@ -205,25 +205,32 @@ def add_main_show_info(list_item, show_info, full_info=True):
 def add_episode_info(list_item, episode_info, full_info=True):
     # type: (ListItem, InfoType, bool) -> ListItem
     """Add episode info to a list item"""
-    season = episode_info.get('strSeason', '1969')[:4]
+    season = episode_info.get('strSeason', '0000')[:4]
     episode = episode_info.get('strEpisode', '0')
     title = episode_info.get('strEvent', 'Episode ' + episode)
     vtag = list_item.getVideoInfoTag()
-    vtag.setTitle(title)
     vtag.setSeason(int(season))
     vtag.setEpisode(int(episode))
     vtag.setMediaType('episode')
     air_date = episode_info.get('dateEvent')
     if air_date:
         vtag.setFirstAired(air_date)
+        if not full_info:
+            title = '%s.%s.%s' % (episode_info.get(
+                'strLeague', ''), air_date.replace('-', ''), title)
+    vtag.setTitle(title)
     if full_info:
-        plot = _clean_plot(episode_info.get('strDescriptionEN', ''))
-        vtag.setPlot(plot)
-        vtag.setPlotOutline(plot)
+        vtag.setTitle(title)
+        raw_plot = episode_info.get('strDescriptionEN')
+        if raw_plot:
+            plot = _clean_plot(episode_info.get('strDescriptionEN', ''))
+            vtag.setPlot(plot)
+            vtag.setPlotOutline(plot)
         if air_date:
             vtag.setPremiered(air_date)
-        theurl = episode_info.get('strThumb', '').replace('\/', '/')
-        if theurl:
+        rawurl = episode_info.get('strThumb', '')
+        if rawurl:
+            theurl = rawurl.replace('\/', '/')
             previewurl = theurl + '/preview'
             vtag.addAvailableArtwork(
                 theurl, art_type='thumb', preview=previewurl)

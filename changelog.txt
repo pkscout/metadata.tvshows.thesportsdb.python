@@ -1,2 +1,5 @@
+1.0.1
+potential fix for multiple league games on same day (requires file name change)
+
 1.0.0
 first Python version of the scraper

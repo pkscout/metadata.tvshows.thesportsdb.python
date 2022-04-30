@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.tvshows.thesportsdb.python"
   name="The SportsDB TV Shows"
-  version="1.0.0"
+  version="1.0.1"
   provider-name="Team Kodi">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
@@ -9,8 +9,8 @@
   </requires>
   <extension point="xbmc.metadata.scraper.tvshows" library="main.py" cachepersistence="00:15"/>
   <extension point="xbmc.addon.metadata">
-    <news>1.0.0
-- first version of the Python version of the scraper
+    <news>1.0.1
+- potential fix for multiple league games on same day (requires file name change)
 	</news>
     <platform>all</platform>
     <license>GPL-3.0-or-later</license>
