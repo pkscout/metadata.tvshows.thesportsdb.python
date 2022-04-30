@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.tvshows.thesportsdb.python"
   name="The SportsDB TV Shows"
-  version="1.0.2"
+  version="1.0.3"
   provider-name="Team Kodi">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
@@ -9,7 +9,10 @@
   </requires>
   <extension point="xbmc.metadata.scraper.tvshows" library="main.py" cachepersistence="00:15"/>
   <extension point="xbmc.addon.metadata">
-    <news>1.0.2
+    <news>1.0.3
+- fix for crashing when using parsing nfo file
+
+1.0.2
 - fix for crash on second scan of folder
 - fix for episodes not loading after initial scan of folder
 
