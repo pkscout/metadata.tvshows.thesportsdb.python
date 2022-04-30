@@ -6,3 +6,8 @@ This scraper does support parsing nfo files to identify a league even if the fol
 The SportsDB TV Show scraper uses the URL for the league page as the parsing URL.  So, for instance, the parsing URL for MLS (American Major League Soccer) would be:
 
 https://www.thesportsdb.com/league/4346-American-Major-League-Soccer
+
+or
+
+https://www.thesportsdb.com/league/4346
+
