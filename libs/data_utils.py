@@ -23,7 +23,7 @@ api_utils.set_headers(dict(settings.HEADERS))
 TAG_RE = re.compile(r'<[^>]+>')
 
 # Regular expressions are listed in order of priority.
-SHOW_ID_REGEXPS = (r'(thesportsdb)\.com/league/(\d+)')
+SHOW_ID_REGEXPS = [r'(thesportsdb)\.com/league/(\d+)']
 
 SUPPORTED_ARTWORK_TYPES = {'poster', 'banner'}
 IMAGE_SIZES = ('large', 'original', 'medium')
