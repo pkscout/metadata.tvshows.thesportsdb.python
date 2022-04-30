@@ -90,34 +90,6 @@ def _get_directors(episode_info):
     return directors_
 
 
-def _set_unique_ids(ext_ids, vtag):
-    """Extract unique ID in various online databases"""
-    for key, value in ext_ids.items():
-        if key in VALIDEXTIDS and value:
-            if key == 'tmdb_id':
-                isTMDB = True
-            else:
-                isTMDB = False
-            vtag.setUniqueID(str(value), type=key[:4], isDefault=isTMDB)
-
-
-def _set_rating(the_info, vtag, episode=False):
-    """Set show/episode rating"""
-    first = True
-    for rating_type in settings.RATING_TYPES:
-        logger.debug('adding rating type of %s' % rating_type)
-        rating = float(the_info.get('ratings', {}).get(
-            rating_type, {}).get('rating', '0'))
-        votes = int(the_info.get('ratings', {}).get(
-            rating_type, {}).get('votes', '0'))
-        logger.debug("adding rating of %s and votes of %s" %
-                     (str(rating), str(votes)))
-        if rating > 0:
-            vtag.setRating(rating, votes=votes,
-                           type=rating_type, isDefault=first)
-            first = False
-
-
 def _add_season_info(show_info, vtag):
     """Add info for league seasons"""
     params = {'id': show_info.get('idLeague', 0)}
@@ -126,7 +98,7 @@ def _add_season_info(show_info, vtag):
     if resp is None:
         return []
     seasons = []
-    for season in resp.get('seasons'):
+    for season in resp.get('seasons', []):
         season_name = season.get('strSeason')
         if season_name:
             season_num = int(season_name[:4])
@@ -275,11 +247,3 @@ def parse_media_id(title):
     elif title.startswith('tvdb/') and title[5:].isdigit():  # TVDB ID
         return {'type': 'tvdb_id', 'title': title[5:]}
     return None
-
-
-def _check_youtube(key):
-    chk_link = "https://www.youtube.com/watch?v="+key
-    check = api_utils.load_info(chk_link, resp_type='not_json')
-    if not check or "Video unavailable" in check:       # video not available
-        return False
-    return True
