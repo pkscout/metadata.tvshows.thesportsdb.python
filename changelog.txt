@@ -1,3 +1,7 @@
+1.0.2
+fix for crash on second scan of folder
+fix for episodes not loading after initial scan of folder
+
 1.0.1
 potential fix for multiple league games on same day (requires file name change)
 
