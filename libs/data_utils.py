@@ -177,12 +177,19 @@ def add_episode_info(list_item, episode_info, full_info=True):
             vtag.setPlotOutline(plot)
         if air_date:
             vtag.setPremiered(air_date)
-        rawurl = episode_info.get('strThumb', '')
-        if rawurl:
-            theurl = rawurl.replace('\/', '/')
-            previewurl = theurl + '/preview'
-            vtag.addAvailableArtwork(
-                theurl, art_type='thumb', preview=previewurl)
+        rawurls = []
+        rawurls.append(episode_info.get('strThumb', ''))
+        rawurls.append(episode_info.get('strFanart', ''))
+        fanart_list = []
+        for rawurl in rawurls:
+            if rawurl:
+                theurl = rawurl.replace('\/', '/')
+                fanart_list.append({'image': theurl})
+                previewurl = theurl + '/preview'
+                vtag.addAvailableArtwork(
+                    theurl, art_type='thumb', preview=previewurl)
+        fanart_list.reverse()
+        list_item.setAvailableFanart(fanart_list)
         # _set_cast(episode_info['credits']['guest_stars'], vtag)
     logger.debug('adding episode information for S%sE%s - %s to list item' %
                  (season, episode, title))
