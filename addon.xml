@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.tvshows.thesportsdb.python"
   name="The SportsDB TV Shows"
-  version="1.0.5"
+  version="1.0.6"
   provider-name="Team Kodi">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
@@ -9,7 +9,11 @@
   </requires>
   <extension point="xbmc.metadata.scraper.tvshows" library="main.py" cachepersistence="00:15"/>
   <extension point="xbmc.addon.metadata">
-    <news>1.0.5
+    <news>1.0.6
+- optimized API usage with additional local caching
+- updated show and episode artwork routines to use common code
+
+1.0.5
 - for team sports team members are now included as actors
 
 1.0.4
