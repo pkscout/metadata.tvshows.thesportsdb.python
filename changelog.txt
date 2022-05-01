@@ -1,3 +1,6 @@
+1.0.5
+for team sports team members are now included as actors
+
 1.0.4
 added fanart to espisodes
 fixed fanart parsing for leagues

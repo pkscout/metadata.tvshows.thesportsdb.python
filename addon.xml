@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.tvshows.thesportsdb.python"
   name="The SportsDB TV Shows"
-  version="1.0.4"
+  version="1.0.5"
   provider-name="Team Kodi">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
@@ -9,7 +9,10 @@
   </requires>
   <extension point="xbmc.metadata.scraper.tvshows" library="main.py" cachepersistence="00:15"/>
   <extension point="xbmc.addon.metadata">
-    <news>1.0.4
+    <news>1.0.5
+- for team sports team members are now included as actors
+
+1.0.4
 - added fanart to espisodes
 - fixed fanart parsing for leagues
 - fixed parsing of TV Rights to list as studios
