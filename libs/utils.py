@@ -70,3 +70,10 @@ def safe_get(dct, key, default=None):
     if key in dct and dct[key] is not None:
         return dct[key]
     return default
+
+
+def url_fix(url):
+    if url:
+        return url.replace('\/', '/')
+    else:
+        return ''

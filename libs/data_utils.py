@@ -8,7 +8,7 @@ from __future__ import absolute_import, unicode_literals
 import re
 from xbmc import Actor
 from collections import namedtuple
-from .utils import safe_get, logger
+from .utils import url_fix, logger
 from . import settings, api_utils, cache
 
 try:
@@ -99,14 +99,14 @@ def set_show_artwork(show_info, list_item):
     images.append(('banner', show_info.get('strBanner')))
     fanart_list = []
     for image_type, image in images:
-        if image_type == 'fanart':
-            if image:
-                fanart_list.append(image.replace('\/', '/'))
-        elif image:
-            theurl = image.replace('\/', '/')
-            previewurl = theurl + '/preview'
-            vtag.addAvailableArtwork(
-                theurl, art_type=image_type, preview=previewurl)
+        if image:
+            theurl = url_fix(image)
+            if image_type == 'fanart':
+                fanart_list.append({'image': theurl})
+            else:
+                previewurl = theurl + '/preview'
+                vtag.addAvailableArtwork(
+                    theurl, art_type=image_type, preview=previewurl)
     if fanart_list:
         list_item.setAvailableFanart(fanart_list)
     return list_item
@@ -144,7 +144,7 @@ def add_main_show_info(list_item, show_info, full_info=True):
     else:
         image = show_info.get('strPoster')
         if image:
-            theurl = image.replace('\/', '/')
+            theurl = url_fix(image)
             previewurl = theurl + '/preview'
             vtag.addAvailableArtwork(
                 theurl, art_type='poster', preview=previewurl)
@@ -185,7 +185,7 @@ def add_episode_info(list_item, episode_info, full_info=True):
         fanart_list = []
         for rawurl in rawurls:
             if rawurl:
-                theurl = rawurl.replace('\/', '/')
+                theurl = url_fix(rawurl)
                 fanart_list.append({'image': theurl})
                 previewurl = theurl + '/preview'
                 vtag.addAvailableArtwork(
