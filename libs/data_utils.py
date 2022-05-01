@@ -131,9 +131,11 @@ def add_main_show_info(list_item, show_info, full_info=True):
         vtag.setUniqueID(show_info.get('idLeague'),
                          type='tsdb', isDefault=True)
         vtag.setGenres([show_info.get('strSport', '')])
-        studios = show_info.get('strTvRights', '').split('\r\n')
-        if studios:
-            vtag.setStudios(studios)
+        tvrights = show_info.get('strTvRights', '')
+        if tvrights:
+            studios = tvrights.split('\r\n')
+            if studios:
+                vtag.setStudios(studios)
         vtag.setCountries([show_info.get('strCountry', '')])
         list_item = set_show_artwork(show_info, list_item)
         show_info['seasons'] = _add_season_info(show_info, vtag)
