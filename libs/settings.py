@@ -14,6 +14,7 @@ SHOW_URL = base_url.format('lookupleague.php')
 SEASON_URL = base_url.format('search_all_seasons.php')
 EVENTLIST_URL = base_url.format('eventsseason.php')
 EPISODE_URL = base_url.format('lookupevent.php')
+ROSTER_URL = base_url.format('searchplayers.php')
 HEADERS = (
     ('User-Agent', 'Kodi sports events scraper by pkscout; contact pkscout@kodi.tv'),
     ('Accept', 'application/json'),

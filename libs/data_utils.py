@@ -49,21 +49,35 @@ def _clean_plot(plot):
     return plot
 
 
-def _set_cast(cast_info, vtag):
+def _set_cast(episode_info, vtag):
     # type: (InfoType, ListItem) -> ListItem
-    """Save cast info to list item"""
-    cast = []
-    for item in cast_info:
-        actor = {
-            'name': item['name'],
-            'role': item.get('character', item.get('character_name', '')),
-            'order': item['order'],
-        }
-        thumb = None
-        if safe_get(item, 'profile_path') is not None:
-            thumb = settings.IMAGEROOTURL + item['profile_path']
-        cast.append(Actor(actor['name'], actor['role'], actor['order'], thumb))
-    vtag.setCast(cast)
+    """Save rosters info to list item"""
+    hometeam = episode_info.get('strHomeTeam')
+    awayteam = episode_info.get('strAwayTeam')
+    roster = []
+    order = 1
+    for team in [hometeam, awayteam]:
+        if team:
+            params = {'t': team.replace(' ', '_')}
+            resp = api_utils.load_info(
+                settings.ROSTER_URL, params=params, verboselog=settings.VERBOSELOG)
+            if resp:
+                players = resp.get('player')
+                if not players:
+                    continue
+                for player in players:
+                    person = {'name': player.get('strPlayer', ''),
+                              'role': '%s - %s' % (player.get('strPosition', ''), team),
+                              'order': order, }
+                    thumb = None
+                    rawthumb = player.get('strThumb')
+                    if rawthumb:
+                        thumb = url_fix(rawthumb)
+                    roster.append(
+                        Actor(person['name'], person['role'], person['order'], thumb))
+                    order = order + 1
+    if roster:
+        vtag.setCast(roster)
 
 
 def _add_season_info(show_info, vtag):
@@ -192,7 +206,7 @@ def add_episode_info(list_item, episode_info, full_info=True):
                     theurl, art_type='thumb', preview=previewurl)
         fanart_list.reverse()
         list_item.setAvailableFanart(fanart_list)
-        # _set_cast(episode_info['credits']['guest_stars'], vtag)
+        _set_cast(episode_info, vtag)
     logger.debug('adding episode information for S%sE%s - %s to list item' %
                  (season, episode, title))
     return list_item
