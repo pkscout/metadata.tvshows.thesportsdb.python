@@ -111,12 +111,11 @@ def _set_artwork(images, list_item):
 
 
 def set_episode_artwork(episode_info, list_item):
-    """Set available images for a show"""
+    """Set available images for an episode"""
     images = []
     images.append(('thumb', episode_info.get('strThumb')))
     images.append(('thumb', episode_info.get('strFanart')))
     images.append(('fanart', episode_info.get('strFanart')))
-    images.append(('fanart', episode_info.get('strThumb')))
     return _set_artwork(images, list_item)
 
 
