@@ -1,3 +1,9 @@
+1.0.4
+added fanart to espisodes
+fixed fanart parsing for leagues
+fixed parsing of TV Rights to list as studios
+code cleanup
+
 1.0.3
 fix for crashing when using parsing nfo file
 
@@ -6,7 +12,7 @@ fix for crash on second scan of folder
 fix for episodes not loading after initial scan of folder
 
 1.0.1
-potential fix for multiple league games on same day (requires file name change)
+fix for multiple league games on same day (requires file name change)
 
 1.0.0
 first Python version of the scraper
