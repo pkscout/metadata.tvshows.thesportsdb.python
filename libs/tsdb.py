@@ -112,3 +112,40 @@ def load_episode_info(show_id, episode_id):
         ep_return['strEpisode'] = episode_info.get('strEpisode', '0')
         return ep_return
     return None
+
+
+def load_roster_info(team_id, team_name):
+    # type: (Text, Text) -> Optional[InfoType]
+    """
+    Load roster info
+
+    :param team_id:
+    :return: team roster or None
+    """
+    players = None
+    resp = cache.load_show_info_from_cache(team_id)
+    if not resp:
+        params = {'t': team_name.replace(' ', '_')}
+        resp = api_utils.load_info(
+            settings.ROSTER_URL, params=params, verboselog=settings.VERBOSELOG)
+    if resp:
+        players = resp.get('player')
+        info = {'idTeam': team_id, 'player': players}
+        cache.cache_show_info(info, info_type='roster')
+    return players
+
+
+def load_season_info(show_id):
+    # type: (Text) -> Optional[InfoType]
+    """
+    Load season info
+
+    :param show_id:
+    :return: season list or None
+    """
+    params = {'id': show_id}
+    resp = api_utils.load_info(
+        settings.SEASON_URL, params=params, verboselog=settings.VERBOSELOG)
+    if resp:
+        return resp.get('seasons')
+    return None

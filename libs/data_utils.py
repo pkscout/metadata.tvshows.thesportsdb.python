@@ -9,7 +9,7 @@ import re
 from xbmc import Actor
 from collections import namedtuple
 from .utils import url_fix, logger
-from . import settings, api_utils, cache
+from . import cache, tsdb
 
 try:
     from typing import Optional, Text, Dict, List, Any  # pylint: disable=unused-import
@@ -18,15 +18,11 @@ try:
 except ImportError:
     pass
 
-api_utils.set_headers(dict(settings.HEADERS))
-
 TAG_RE = re.compile(r'<[^>]+>')
 
 # Regular expressions are listed in order of priority.
 SHOW_ID_REGEXPS = [r'(thesportsdb)\.com/league/(\d+)']
 
-SUPPORTED_ARTWORK_TYPES = {'poster', 'banner'}
-IMAGE_SIZES = ('large', 'original', 'medium')
 CLEAN_PLOT_REPLACEMENTS = (
     ('<b>', '[B]'),
     ('</b>', '[/B]'),
@@ -34,7 +30,6 @@ CLEAN_PLOT_REPLACEMENTS = (
     ('</i>', '[/I]'),
     ('</p><p>', '[CR]'),
 )
-VALIDEXTIDS = ['tmdb_id', 'imdb_id', 'tvdb_id']
 
 UrlParseResult = namedtuple(
     'UrlParseResult', ['provider', 'show_id'])
@@ -52,43 +47,40 @@ def _clean_plot(plot):
 def _set_cast(episode_info, vtag):
     # type: (InfoType, ListItem) -> ListItem
     """Save rosters info to list item"""
-    hometeam = episode_info.get('strHomeTeam')
-    awayteam = episode_info.get('strAwayTeam')
-    roster = []
+    hometeam = {'idTeam': episode_info.get('idHomeTeam'),
+                'strName': episode_info.get('strHomeTeam')}
+    awayteam = {'idTeam': episode_info.get('idAwayTeam'),
+                'strName': episode_info.get('strAwayTeam')}
+    cast = []
     order = 1
     for team in [hometeam, awayteam]:
-        if team:
-            params = {'t': team.replace(' ', '_')}
-            resp = api_utils.load_info(
-                settings.ROSTER_URL, params=params, verboselog=settings.VERBOSELOG)
-            if resp:
-                players = resp.get('player')
-                if not players:
-                    continue
-                for player in players:
-                    person = {'name': player.get('strPlayer', ''),
-                              'role': '%s - %s' % (player.get('strPosition', ''), team),
-                              'order': order, }
-                    thumb = None
-                    rawthumb = player.get('strThumb')
-                    if rawthumb:
-                        thumb = url_fix(rawthumb)
-                    roster.append(
-                        Actor(person['name'], person['role'], person['order'], thumb))
-                    order = order + 1
-    if roster:
-        vtag.setCast(roster)
+        if team['idTeam'] and team['strName']:
+            players = tsdb.load_roster_info(team['idTeam'], team['strName'])
+            if not players:
+                continue
+            for player in players:
+                person = {'name': player.get('strPlayer', ''),
+                          'role': '%s - %s' % (player.get('strPosition', ''), team['strName']),
+                          'order': order, }
+                thumb = None
+                rawthumb = player.get('strThumb')
+                if rawthumb:
+                    thumb = url_fix(rawthumb)
+                cast.append(
+                    Actor(person['name'], person['role'], person['order'], thumb))
+                order = order + 1
+    if cast:
+        vtag.setCast(cast)
 
 
 def _add_season_info(show_info, vtag):
+    # type: (InfoType, ListItem) -> ListItem
     """Add info for league seasons"""
-    params = {'id': show_info.get('idLeague', 0)}
-    resp = api_utils.load_info(
-        settings.SEASON_URL, params=params, verboselog=settings.VERBOSELOG)
-    if resp is None:
+    season_list = tsdb.load_season_info(show_info.get('idLeague', '0'))
+    if not season_list:
         return []
     seasons = []
-    for season in resp.get('seasons', []):
+    for season in season_list:
         season_name = season.get('strSeason')
         if season_name:
             season_num = int(season_name[:4])
@@ -101,16 +93,8 @@ def _add_season_info(show_info, vtag):
     return seasons
 
 
-def set_show_artwork(show_info, list_item):
-    """Set available images for a show"""
+def _set_artwork(images, list_item):
     vtag = list_item.getVideoInfoTag()
-    images = []
-    images.append(('fanart', show_info.get('strFanart1')))
-    images.append(('fanart', show_info.get('strFanart2')))
-    images.append(('fanart', show_info.get('strFanart3')))
-    images.append(('fanart', show_info.get('strFanart1')))
-    images.append(('poster', show_info.get('strPoster')))
-    images.append(('banner', show_info.get('strBanner')))
     fanart_list = []
     for image_type, image in images:
         if image:
@@ -124,6 +108,28 @@ def set_show_artwork(show_info, list_item):
     if fanart_list:
         list_item.setAvailableFanart(fanart_list)
     return list_item
+
+
+def set_episode_artwork(episode_info, list_item):
+    """Set available images for a show"""
+    images = []
+    images.append(('thumb', episode_info.get('strThumb')))
+    images.append(('thumb', episode_info.get('strFanart')))
+    images.append(('fanart', episode_info.get('strFanart')))
+    images.append(('fanart', episode_info.get('strThumb')))
+    return _set_artwork(images, list_item)
+
+
+def set_show_artwork(show_info, list_item):
+    """Set available images for a show"""
+    images = []
+    images.append(('fanart', show_info.get('strFanart1')))
+    images.append(('fanart', show_info.get('strFanart2')))
+    images.append(('fanart', show_info.get('strFanart3')))
+    images.append(('fanart', show_info.get('strFanart1')))
+    images.append(('poster', show_info.get('strPoster')))
+    images.append(('banner', show_info.get('strBanner')))
+    return _set_artwork(images, list_item)
 
 
 def add_main_show_info(list_item, show_info, full_info=True):
@@ -193,19 +199,7 @@ def add_episode_info(list_item, episode_info, full_info=True):
             vtag.setPlotOutline(plot)
         if air_date:
             vtag.setPremiered(air_date)
-        rawurls = []
-        rawurls.append(episode_info.get('strThumb', ''))
-        rawurls.append(episode_info.get('strFanart', ''))
-        fanart_list = []
-        for rawurl in rawurls:
-            if rawurl:
-                theurl = url_fix(rawurl)
-                fanart_list.append({'image': theurl})
-                previewurl = theurl + '/preview'
-                vtag.addAvailableArtwork(
-                    theurl, art_type='thumb', preview=previewurl)
-        fanart_list.reverse()
-        list_item.setAvailableFanart(fanart_list)
+        list_item = set_episode_artwork(episode_info, list_item)
         _set_cast(episode_info, vtag)
     logger.debug('adding episode information for S%sE%s - %s to list item' %
                  (season, episode, title))
