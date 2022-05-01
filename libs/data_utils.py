@@ -155,7 +155,9 @@ def add_main_show_info(list_item, show_info, full_info=True):
         vtag.setUniqueID(show_info.get('idLeague'),
                          type='tsdb', isDefault=True)
         vtag.setGenres([show_info.get('strSport', '')])
-        vtag.setStudios([show_info.get('strTvRights', '')])
+        studios = show_info.get('strTvRights', '').split('\r\n')
+        if studios:
+            vtag.setStudios(studios)
         vtag.setCountries([show_info.get('strCountry', '')])
 #        vtag.setWriters(_get_credits(show_info))
         list_item = set_show_artwork(show_info, list_item)
