@@ -105,8 +105,7 @@ def get_episode_list(show_id):  # pylint: disable=missing-docstring
     else:
         show_info = tsdb.load_show_info(show_id)
     if show_info is not None:
-        idLeague = show_info.get(
-            'idLeague', 0)
+        idLeague = show_info.get('idLeague', 0)
         seasons = show_info.get('seasons')
         if not seasons:
             seasons = show_info['seasons'] = data_utils._add_season_info(
