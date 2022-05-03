@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.tvshows.thesportsdb.python"
   name="The SportsDB TV Shows"
-  version="1.0.6"
+  version="1.0.7"
   provider-name="Team Kodi">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
@@ -9,27 +9,8 @@
   </requires>
   <extension point="xbmc.metadata.scraper.tvshows" library="main.py" cachepersistence="00:15"/>
   <extension point="xbmc.addon.metadata">
-    <news>1.0.6
-- optimized API usage with additional local caching
-- updated show and episode artwork routines to use common code
-
-1.0.5
-- for team sports team members are now included as actors
-
-1.0.4
-- added fanart to espisodes
-- fixed fanart parsing for leagues
-- fixed parsing of TV Rights to list as studios
-
-1.0.3
-- fix for crashing when using parsing nfo file
-
-1.0.2
-- fix for crash on second scan of folder
-- fix for episodes not loading after initial scan of folder
-
-1.0.1
-- fix for multiple league games on same day (requires file name change)
+    <news>1.0.7
+first mostly public release of the scraper
 	</news>
     <platform>all</platform>
     <license>GPL-3.0-or-later</license>

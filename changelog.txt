@@ -1,3 +1,6 @@
+1.0.7
+moved all API calls to tsdb library
+
 1.0.6
 optimized API usage with additional local caching
 updated show and episode artwork routines to use common code
