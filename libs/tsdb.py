@@ -149,3 +149,22 @@ def load_season_info(show_id):
     if resp:
         return resp.get('seasons')
     return None
+
+
+def load_season_episodes(idLeague, season_name):
+   # type: (int, Text) -> Optional[InfoType]
+    """
+    Load episode list for given season
+
+    :param idLeague:
+    :param season_name:
+    :return: episode list or None
+    """
+    params = {}
+    params['id'] = idLeague
+    params['s'] = season_name
+    resp = api_utils.load_info(
+        settings.EVENTLIST_URL, params=params, verboselog=settings.VERBOSELOG)
+    if resp:
+        return resp.get('events')
+    return None

@@ -9,7 +9,7 @@ import sys
 import urllib.parse
 import xbmcgui
 import xbmcplugin
-from . import tsdb, data_utils, api_utils, settings, cache
+from . import tsdb, data_utils, cache
 from .utils import logger
 try:
     from typing import Optional, Text, Union, ByteString  # pylint: disable=unused-import
@@ -17,8 +17,6 @@ except ImportError:
     pass
 
 HANDLE = int(sys.argv[1])  # type: int
-
-api_utils.set_headers(dict(settings.HEADERS))
 
 
 def find_show(title):
@@ -107,25 +105,24 @@ def get_episode_list(show_id):  # pylint: disable=missing-docstring
     else:
         show_info = tsdb.load_show_info(show_id)
     if show_info is not None:
+        idLeague = show_info.get(
+            'idLeague', 0)
         seasons = show_info.get('seasons')
         if not seasons:
             seasons = show_info['seasons'] = data_utils._add_season_info(
                 show_info, None)
         event_list = []
         for season in seasons:
-            params = {}
-            params['id'] = show_info.get('idLeague', 0)
-            params['s'] = season['season_name']
-            resp = api_utils.load_info(
-                settings.EVENTLIST_URL, params=params, verboselog=settings.VERBOSELOG)
-            if resp is not None:
+            events = tsdb.load_season_episodes(
+                idLeague, season.get('season_name', ''))
+            if events:
                 ep_num = 1
-                for event in resp.get('events', []):
+                for event in events:
                     event['strEpisode'] = str(ep_num)
                     event['strLeague'] = show_info.get('strLeague', '')
                     event_list.append(event)
                     encoded_ids = urllib.parse.urlencode(
-                        {'show_id': params['id'], 'episode_id': event.get('idEvent', 0)})
+                        {'show_id': idLeague, 'episode_id': event.get('idEvent', 0)})
                     list_item = xbmcgui.ListItem(
                         event.get('strEvent', ''), offscreen=True)
                     list_item = data_utils.add_episode_info(
