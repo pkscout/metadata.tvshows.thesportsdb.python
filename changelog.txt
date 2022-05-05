@@ -1,3 +1,8 @@
+1.0.8
+added team list for a league as cast for the show
+fix to catch bad response from API
+moved URL globals from settings to tsdb module
+
 1.0.7
 moved all API calls to tsdb library
 
