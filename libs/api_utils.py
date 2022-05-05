@@ -51,7 +51,10 @@ def load_info(url, params=None, default=None, resp_type='json', verboselog=False
     if response is None:
         resp = default
     elif resp_type.lower() == 'json':
-        resp = json.loads(response.read().decode('utf-8'))
+        try:
+            resp = json.loads(response.read().decode('utf-8'))
+        except json.decoder.JSONDecodeError:
+            return None
     else:
         resp = response.read().decode('utf-8')
     if verboselog:
