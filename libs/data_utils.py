@@ -183,7 +183,7 @@ def add_main_show_info(list_item, show_info, full_info=True):
         vtag.setCountries([show_info.get('strCountry', '')])
         list_item = set_show_artwork(show_info, list_item)
         show_info['seasons'] = _add_season_info(show_info, vtag)
-        show_info['teams'] = _set_show_cast(show_info, vtag)
+        # show_info['teams'] = _set_show_cast(show_info, vtag)
         cache.cache_show_info(show_info)
     else:
         image = show_info.get('strPoster')
