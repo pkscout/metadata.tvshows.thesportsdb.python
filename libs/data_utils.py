@@ -44,7 +44,7 @@ def _clean_plot(plot):
     return plot
 
 
-def _set_cast(episode_info, vtag):
+def _set_episode_cast(episode_info, vtag):
     # type: (InfoType, ListItem) -> ListItem
     """Save rosters info to list item"""
     hometeam = {'idTeam': episode_info.get('idHomeTeam'),
@@ -71,6 +71,31 @@ def _set_cast(episode_info, vtag):
                 order = order + 1
     if cast:
         vtag.setCast(cast)
+
+
+def _set_show_cast(show_info, vtag):
+    # type: (InfoType, ListItem) -> List
+    """Save team info to list item"""
+    cast = []
+    order = 1
+    teams = show_info.get('teams')
+    if not teams:
+        teams = tsdb.load_team_list(show_info.get('strLeague', ''))
+    if teams:
+        for team in teams:
+            team = {'name': team.get('strTeam', ''),
+                    'role': '',
+                    'order': order, }
+            thumb = None
+            rawthumb = team.get('strTeamBadge')
+            if rawthumb:
+                thumb = url_fix(rawthumb)
+            cast.append(
+                Actor(team['name'], team['role'], team['order'], thumb))
+            order = order + 1
+    if cast:
+        vtag.setCast(cast)
+    return teams
 
 
 def _add_season_info(show_info, vtag):
@@ -158,8 +183,8 @@ def add_main_show_info(list_item, show_info, full_info=True):
         vtag.setCountries([show_info.get('strCountry', '')])
         list_item = set_show_artwork(show_info, list_item)
         show_info['seasons'] = _add_season_info(show_info, vtag)
+        show_info['teams'] = _set_show_cast(show_info, vtag)
         cache.cache_show_info(show_info)
-#        _set_cast(show_info['credits']['cast'], vtag)
     else:
         image = show_info.get('strPoster')
         if image:
@@ -199,7 +224,7 @@ def add_episode_info(list_item, episode_info, full_info=True):
         if air_date:
             vtag.setPremiered(air_date)
         list_item = set_episode_artwork(episode_info, list_item)
-        _set_cast(episode_info, vtag)
+        _set_episode_cast(episode_info, vtag)
     logger.debug('adding episode information for S%sE%s - %s to list item' %
                  (season, episode, title))
     return list_item

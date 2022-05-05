@@ -8,17 +8,6 @@ import urllib.parse
 from xbmcaddon import Addon
 
 ADDON = Addon()
-base_url = 'https://www.thesportsdb.com/api/v1/json/863583675235/{}'
-SEARCH_URL = base_url.format('all_leagues.php')
-SHOW_URL = base_url.format('lookupleague.php')
-SEASON_URL = base_url.format('search_all_seasons.php')
-EVENTLIST_URL = base_url.format('eventsseason.php')
-EPISODE_URL = base_url.format('lookupevent.php')
-ROSTER_URL = base_url.format('searchplayers.php')
-HEADERS = (
-    ('User-Agent', 'Kodi sports events scraper by pkscout; contact pkscout@kodi.tv'),
-    ('Accept', 'application/json'),
-)
 
 try:
     source_params = dict(urllib.parse.parse_qsl(sys.argv[2]))
