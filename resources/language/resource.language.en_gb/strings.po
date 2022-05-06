@@ -23,3 +23,21 @@ msgstr ""
 msgctxt "#30201"
 msgid "Verbose debug logging"
 msgstr ""
+
+# empty strings from 30202 to 30304
+
+msgctxt "#30305"
+msgid "Enable Trailer"
+msgstr ""
+
+msgctxt "#30306"
+msgid "Addon Player"
+msgstr ""
+
+msgctxt "#30307"
+msgid "YouTube"
+msgstr ""
+
+msgctxt "#30308"
+msgid "Tubed"
+msgstr ""

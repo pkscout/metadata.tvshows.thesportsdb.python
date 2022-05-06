@@ -9,7 +9,7 @@ import re
 from xbmc import Actor
 from collections import namedtuple
 from .utils import url_fix, logger
-from . import cache, tsdb
+from . import cache, tsdb, settings, api_utils
 
 try:
     from typing import Optional, Text, Dict, List, Any  # pylint: disable=unused-import
@@ -18,11 +18,11 @@ try:
 except ImportError:
     pass
 
-TAG_RE = re.compile(r'<[^>]+>')
-
-# Regular expressions are listed in order of priority.
+# Regular expressions for various parsing
 SHOW_ID_REGEXPS = [r'(thesportsdb)\.com/league/(\d+)']
+YOUTUBE_REGEXP = r'v=(.*)'
 
+TAG_RE = re.compile(r'<[^>]+>')
 CLEAN_PLOT_REPLACEMENTS = (
     ('<b>', '[B]'),
     ('</b>', '[/B]'),
@@ -225,6 +225,12 @@ def add_episode_info(list_item, episode_info, full_info=True):
             vtag.setPremiered(air_date)
         list_item = set_episode_artwork(episode_info, list_item)
         _set_episode_cast(episode_info, vtag)
+        # trailers are not supported in epsiodes, leaving here in case they ever are
+        if False:    # if settings.ENABTRAILER:
+            trailer = _parse_trailer(episode_info.get('strVideo'))
+            if trailer:
+                vtag.setTrailer(trailer)
+
     logger.debug('adding episode information for S%sE%s - %s to list item' %
                  (season, episode, title))
     return list_item
@@ -248,17 +254,24 @@ def parse_nfo_url(nfo):
     return sid_match
 
 
-def parse_media_id(title):
-    title = title.lower()
-    if title.startswith('tt') and title[2:].isdigit():
-        # IMDB ID works alone because it is clear
-        return {'type': 'imdb_id', 'title': title}
-    # IMDB ID with prefix to match
-    elif title.startswith('imdb/tt') and title[7:].isdigit():
-        # IMDB ID works alone because it is clear
-        return {'type': 'imdb_id', 'title': title[5:]}
-    elif title.startswith('tmdb/') and title[5:].isdigit():  # TVDB ID
-        return {'type': 'tmdb_id', 'title': title[5:]}
-    elif title.startswith('tvdb/') and title[5:].isdigit():  # TVDB ID
-        return {'type': 'tvdb_id', 'title': title[5:]}
+def _parse_trailer(raw_trailer):
+    if raw_trailer:
+        if settings.PLAYERSOPT == 'tubed':
+            addon_player = 'plugin://plugin.video.tubed/?mode=play&video_id='
+        elif settings.PLAYERSOPT == 'youtube':
+            addon_player = 'plugin://plugin.video.youtube/?action=play_video&videoid='
+        trailer = url_fix(raw_trailer)
+        key_matches = re.search(YOUTUBE_REGEXP, trailer, re.I)
+        if key_matches:
+            youtube_key = key_matches.group(1)
+            if _check_youtube(trailer):
+                return addon_player + youtube_key
     return None
+
+
+def _check_youtube(key):
+    chk_link = "https://www.youtube.com/watch?v="+key
+    check = api_utils.load_info(chk_link, resp_type='not_json')
+    if not check or "Video unavailable" in check:       # video not available
+        return False
+    return True

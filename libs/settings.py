@@ -15,5 +15,9 @@ except IndexError:
     source_params = {}
 source_settings = json.loads(source_params.get('pathSettings', '{}'))
 
+ENABTRAILER = source_settings.get(
+    'enab_trailer', ADDON.getSettingBool('enab_trailer'))
+PLAYERSOPT = source_settings.get(
+    'players_opt', ADDON.getSettingString('players_opt')).lower()
 VERBOSELOG = source_settings.get(
     'verboselog', ADDON.getSettingBool('verboselog'))
