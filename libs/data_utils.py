@@ -161,17 +161,15 @@ def add_main_show_info(list_item, show_info, full_info=True):
     """Add main show info to a list item"""
     vtag = list_item.getVideoInfoTag()
     showname = show_info.get('strLeague')
-    plot = _clean_plot(show_info.get('strDescriptionEN', ''))
     vtag.setTitle(showname)
     vtag.setOriginalTitle(showname)
     vtag.setTvShowTitle(showname)
-    vtag.setPlot(plot)
-    vtag.setPlotOutline(plot)
     vtag.setMediaType('tvshow')
     vtag.setEpisodeGuide(str(show_info['idLeague']))
     vtag.setYear(int(show_info.get('intFormedYear', '')[:4]))
     vtag.setPremiered(show_info.get('dateFirstEvent', ''))
     if full_info:
+        _set_plot(show_info, vtag)
         vtag.setUniqueID(show_info.get('idLeague'),
                          type='tsdb', isDefault=True)
         vtag.setGenres([show_info.get('strSport', '')])
@@ -215,18 +213,12 @@ def add_episode_info(list_item, episode_info, full_info=True):
                 'strLeague', ''), air_date.replace('-', ''), title)
     vtag.setTitle(title)
     if full_info:
-        vtag.setTitle(title)
-        raw_plot = episode_info.get('strDescriptionEN')
-        if raw_plot:
-            plot = _clean_plot(episode_info.get('strDescriptionEN', ''))
-            vtag.setPlot(plot)
-            vtag.setPlotOutline(plot)
+        _set_plot(episode_info, vtag)
         if air_date:
             vtag.setPremiered(air_date)
         list_item = set_episode_artwork(episode_info, list_item)
         _set_episode_cast(episode_info, vtag)
-        # trailers are not supported in epsiodes, leaving here in case they ever are
-        if False:    # if settings.ENABTRAILER:
+        if settings.ENABTRAILER:
             trailer = _parse_trailer(episode_info.get('strVideo'))
             if trailer:
                 vtag.setTrailer(trailer)
@@ -252,6 +244,18 @@ def parse_nfo_url(nfo):
                     show_id_match.group(1), show_id_match.group(2))
                 break
     return sid_match
+
+
+def _set_plot(info, vtag):
+    # type: (InfoType, ListItem) -> ListItem
+    """Add plot for league or game"""
+    desc = info.get('strDescription' + settings.LANGUAGE)
+    if not desc:
+        desc = info.get('strDescriptionEN')
+    if desc:
+        plot = _clean_plot(desc)
+        vtag.setPlot(plot)
+        vtag.setPlotOutline(plot)
 
 
 def _parse_trailer(raw_trailer):

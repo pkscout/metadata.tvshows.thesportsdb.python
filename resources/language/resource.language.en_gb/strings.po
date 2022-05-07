@@ -24,20 +24,82 @@ msgctxt "#30201"
 msgid "Verbose debug logging"
 msgstr ""
 
-# empty strings from 30202 to 30304
-
-msgctxt "#30305"
+msgctxt "#30202"
 msgid "Enable Trailer"
 msgstr ""
 
-msgctxt "#30306"
+msgctxt "#30203"
 msgid "Addon Player"
 msgstr ""
 
-msgctxt "#30307"
+msgctxt "#30204"
 msgid "YouTube"
 msgstr ""
 
-msgctxt "#30308"
+msgctxt "#30205"
 msgid "Tubed"
+msgstr ""
+
+msgctxt "#30206"
+msgid "Preferred language"
+msgstr ""
+
+msgctxt "#30207"
+msgid "Chinese"
+msgstr ""
+
+msgctxt "#30208"
+msgid "Dutch"
+msgstr ""
+
+msgctxt "#30209"
+msgid "English"
+msgstr ""
+
+msgctxt "#30210"
+msgid "French"
+msgstr ""
+
+msgctxt "#30211"
+msgid "German"
+msgstr ""
+
+msgctxt "#30212"
+msgid "Hebrew"
+msgstr ""
+
+msgctxt "#30213"
+msgid "Hungarian"
+msgstr ""
+
+msgctxt "#30214"
+msgid "Italian"
+msgstr ""
+
+msgctxt "#30215"
+msgid "Japanese"
+msgstr ""
+
+msgctxt "#30216"
+msgid "Norwegian"
+msgstr ""
+
+msgctxt "#30217"
+msgid "Polish"
+msgstr ""
+
+msgctxt "#30218"
+msgid "Portuguese"
+msgstr ""
+
+msgctxt "#30219"
+msgid "Russian"
+msgstr ""
+
+msgctxt "#30220"
+msgid "Spanish"
+msgstr ""
+
+msgctxt "#30221"
+msgid "Swedish"
 msgstr ""
