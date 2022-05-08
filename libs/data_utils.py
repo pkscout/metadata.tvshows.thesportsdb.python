@@ -119,6 +119,8 @@ def _add_season_info(show_info, vtag):
 
 
 def _set_artwork(images, list_item):
+    # type: (List, ListItem) -> ListItem
+    """set the artwork for the list item"""
     vtag = list_item.getVideoInfoTag()
     fanart_list = []
     for image_type, image in images:
@@ -136,6 +138,7 @@ def _set_artwork(images, list_item):
 
 
 def set_episode_artwork(episode_info, list_item):
+    # type: (InfoType, ListItem) -> ListItem
     """Set available images for an episode"""
     images = []
     images.append(('thumb', episode_info.get('strThumb')))
@@ -145,6 +148,7 @@ def set_episode_artwork(episode_info, list_item):
 
 
 def set_show_artwork(show_info, list_item):
+    # type: (InfoType, ListItem) -> ListItem
     """Set available images for a show"""
     images = []
     images.append(('fanart', show_info.get('strFanart1')))
@@ -259,6 +263,8 @@ def _set_plot(info, vtag):
 
 
 def _parse_trailer(raw_trailer):
+    # type: (Text) -> Text
+    """create a valid Tubed or YouTube plugin trailer URL"""
     if raw_trailer:
         if settings.PLAYERSOPT == 'tubed':
             addon_player = 'plugin://plugin.video.tubed/?mode=play&video_id='
@@ -274,6 +280,8 @@ def _parse_trailer(raw_trailer):
 
 
 def _check_youtube(key):
+    # type: (Text) -> bool
+    """check to see if the YouTube key returns a valid link"""
     chk_link = "https://www.youtube.com/watch?v="+key
     check = api_utils.load_info(chk_link, resp_type='not_json')
     if not check or "Video unavailable" in check:       # video not available

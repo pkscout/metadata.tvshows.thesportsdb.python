@@ -88,8 +88,9 @@ def get_details(show_id):
             HANDLE, False, xbmcgui.ListItem(offscreen=True))
 
 
-def get_episode_list(show_id):  # pylint: disable=missing-docstring
+def get_episode_list(show_id):
     # type: (Text) -> None
+    """Get games in a league"""
     logger.debug('Getting event list for sports show id {}'.format(show_id))
     if not show_id.isdigit():
         # Kodi has a bug: when a show directory contains an XML NFO file with
@@ -142,6 +143,7 @@ def get_episode_list(show_id):  # pylint: disable=missing-docstring
 
 def get_episode_details(encoded_ids):  # pylint: disable=missing-docstring
     # type: (Text) -> None
+    """Get details about a specific game"""
     encoded_ids = urllib.parse.unquote(encoded_ids)
     decoded_ids = dict(urllib.parse.parse_qsl(encoded_ids))
     logger.debug('Getting event details for {}'.format(decoded_ids))

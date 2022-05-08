@@ -21,10 +21,12 @@ HEADERS = {}
 
 
 def set_headers(headers):
+    # type: (Dict) -> None
     HEADERS.update(headers)
 
 
 def load_info(url, params=None, default=None, resp_type='json', verboselog=False):
+    # type: (Text, Dict, Text, Text, bool) -> Optional[Text]
     """
     Load info from external api
 

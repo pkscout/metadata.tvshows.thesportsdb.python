@@ -48,6 +48,7 @@ api_utils.set_headers(dict(HEADERS))
 
 
 def search_show(title):
+    # type: (Text) -> Optional[List]
     """
     Search for a single sports league
 
@@ -72,6 +73,8 @@ def search_show(title):
 
 
 def load_show_info(show_id):
+    # type: (Text) -> Optional[InfoType]
+    """Save rosters info to list item"""
     """
     Get full info for a single league
 
