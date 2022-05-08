@@ -54,7 +54,8 @@ def load_info(url, params=None, default=None, resp_type='json', verboselog=False
         try:
             resp = json.loads(response.read().decode('utf-8'))
         except json.decoder.JSONDecodeError:
-            return None
+            logger.debug('remote site sent back bad JSON')
+            resp = default
     else:
         resp = response.read().decode('utf-8')
     if verboselog:
