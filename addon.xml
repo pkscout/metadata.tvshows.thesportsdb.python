@@ -13,6 +13,12 @@
     <license>GPL-3.0-or-later</license>
     <assets>
       <icon>resources/icon.png</icon>
+      <screenshot>resources/screenshot-01.jpg</screenshot>
+      <screenshot>resources/screenshot-02.jpg</screenshot>
+      <screenshot>resources/screenshot-03.jpg</screenshot>
+      <screenshot>resources/screenshot-04.jpg</screenshot>
+      <screenshot>resources/screenshot-05.jpg</screenshot>
+      <screenshot>resources/screenshot-06.jpg</screenshot>
     </assets>
     <forum>https://forum.kodi.tv/showthread.php?tid=368047</forum>
     <website>https://www.thesportsdb.com</website>
