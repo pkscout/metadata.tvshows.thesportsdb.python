@@ -134,7 +134,7 @@ def _set_artwork(images, list_item):
                 vtag.addAvailableArtwork(
                     theurl, arttype=image_type, preview=previewurl)
     if fanart_list:
-        list_item.setAvailableFanart(fanart_list)
+        vtag.setAvailableFanart(fanart_list)
     return list_item
 
 
