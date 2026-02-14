@@ -13,8 +13,6 @@
     <news>1.2.0
 first version for Kodi 22 (Piers)
 use new VideoInfoTag call to add fanart
-added season plot
-added tagline (requires a nightly build after Dec 25 2025)
     </news>
     <platform>all</platform>
     <license>GPL-3.0-or-later</license>
